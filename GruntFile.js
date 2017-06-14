@@ -2,15 +2,26 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    clean: ['build'],
+    clean: ['temp', 'build'],
     concat: {
       options: {
         separator: ';'
       },
       dist: {
         src: ['src/**/*.js', '!src/__tests__/**/*.js'],
-        dest: 'build/<%= pkg.name %>.js'
+        dest: 'tmp/<%= pkg.name %>.js'
       }
+    },
+    babel: {
+  		options: {
+  			sourceMap: true,
+  			presets: ['es2015']
+  		},
+  		dist: {
+  			files: {
+  				'build/<%= pkg.name %>.js': 'tmp/<%= pkg.name %>.js'
+  			}
+  		}
     },
     uglify: {
       options: {
@@ -19,7 +30,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'build/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+          'build/<%= pkg.name %>.min.js': ['build/<%= pkg.name %>.js']
         }
       }
     }
@@ -28,5 +39,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.registerTask('default', ['clean', 'concat', 'uglify']);
+  grunt.loadNpmTasks('grunt-babel');
+  grunt.registerTask('default', ['clean', 'concat', 'babel', 'uglify']);
 }

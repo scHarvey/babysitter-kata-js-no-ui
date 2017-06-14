@@ -4,7 +4,8 @@
 # testing
 /coverage
 
-# production
+# build files
+/tmp
 /build
 
 # misc
