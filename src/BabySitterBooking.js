@@ -37,7 +37,12 @@ export default () => {
   }
 
   function validateEndTime(endTime, startTime) {
-    if (endTime.isAfter(_latestEndTime)) {
+    if (endTime.isBefore(startTime)){
+      response = {
+        code: 400,
+        message: 'End Time can not be earlier than Start Time.'
+      };  
+    } else if (endTime.isAfter(_latestEndTime)) {
       response = {
         code: 400,
         message: 'End time is later than the allowed time.'

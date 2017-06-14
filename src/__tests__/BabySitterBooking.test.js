@@ -75,4 +75,22 @@ describe('BabysitterBooking endTime ', () => {
     expect(bookingReturn.endTimeResponse.code).toEqual(200);
     expect(bookingReturn.endTimeResponse.message).toEqual('OK');
   });
+
+  it('returns a 200 if endTime is exactly 4:00AM', () => {
+    endTime = new Moment().startOf('day').hour(28).minute(0).format('X');
+    bookingReturn = babySitterBooking.validateBooking(null, endTime);
+
+    expect(bookingReturn.endTimeResponse.code).toEqual(200);
+    expect(bookingReturn.endTimeResponse.message).toEqual('OK');
+  });
+
+  it('returns a 400 if endTime is before startTime', () => {
+      endTime = new Moment().startOf('day').hour(19).minute(0).format('X');
+      startTime = new Moment().startOf('day').hour(19).minute(30).format('X');
+      bookingReturn = babySitterBooking.validateBooking(startTime, endTime);
+
+      expect(bookingReturn.endTimeResponse.code).toEqual(400);
+      expect(bookingReturn.endTimeResponse.message).toEqual('End Time can not be earlier than Start Time.');
+    });
+
 });
