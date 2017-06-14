@@ -3,10 +3,11 @@
 import Moment from 'moment';
 import BabySitterBooking from '../BabySitterBooking';
 
+const babySitterBooking = BabySitterBooking();
+
 describe('BabysitterBooking startTime ', () => {
 
   it('returns a 400 error if startTime is earlier than 5:00PM', () => {
-    let babySitterBooking = BabySitterBooking();
     const startTime = new Moment().startOf('day').hour(16).minute(30).format('X');
     let bookingReturn = babySitterBooking.validateBooking(startTime);
 
@@ -15,7 +16,6 @@ describe('BabysitterBooking startTime ', () => {
   });
 
   it('returns a 200 OK if startTime is between than 5:00PM and 4:00AM tomorrow', () => {
-    let babySitterBooking = BabySitterBooking();
     const startTime = new Moment().startOf('day').hour(17).minute(30).format('X');
     let bookingReturn = babySitterBooking.validateBooking(startTime);
 
