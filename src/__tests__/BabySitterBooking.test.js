@@ -59,7 +59,7 @@ describe('BabysitterBooking startTime ', () => {
   });
 });
 
-describe('BabysitterBooking startTime ', () => {
+describe('BabysitterBooking endTime ', () => {
   it('returns a 400 error if endTime is later than 4:00AM', () => {
       endTime = new Moment().startOf('day').hour(30).minute(0).format('X');
       bookingReturn = babySitterBooking.validateBooking(null, endTime);
@@ -67,4 +67,12 @@ describe('BabysitterBooking startTime ', () => {
       expect(bookingReturn.endTimeResponse.code).toEqual(400);
       expect(bookingReturn.endTimeResponse.message).toEqual('End time is later than the allowed time.');
     });
+
+  it('returns a 200 if endTime is earlier than 4:00AM', () => {
+    endTime = new Moment().startOf('day').hour(24).minute(30).format('X');
+    bookingReturn = babySitterBooking.validateBooking(null, endTime);
+
+    expect(bookingReturn.endTimeResponse.code).toEqual(200);
+    expect(bookingReturn.endTimeResponse.message).toEqual('OK');
+  });
 });

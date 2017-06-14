@@ -11,18 +11,21 @@ export default () => {
 
   let response = {};
 
+  function unixToMoment(time) {
+    return Moment.unix(time);
+  }
   function validateStartTime(startTime, endTime) {
-    if (Moment.unix(startTime).isAfter(Moment.unix(endTime))) {
+    if (startTime.isAfter(endTime)) {
       response = {
         code: 400,
         message: 'Start Time can not be later than End Time.'
       };
-    } else if (Moment.unix(startTime).isBefore(_earliestStartTime)) {
+    } else if (startTime.isBefore(_earliestStartTime)) {
       response = {
         code: 400,
         message: 'Start time is earlier than the allowed time.'
       };
-    } else if (Moment.unix(startTime).isSameOrBefore(_latestEndTime)){
+    } else if (startTime.isSameOrBefore(_latestEndTime)){
       response = {
         code: 200,
         message: 'OK'
@@ -34,10 +37,15 @@ export default () => {
   }
 
   function validateEndTime(endTime, startTime) {
-    if (Moment.unix(endTime).isAfter(_latestEndTime)) {
+    if (endTime.isAfter(_latestEndTime)) {
       response = {
         code: 400,
         message: 'End time is later than the allowed time.'
+      };
+    } else if (endTime.isSameOrBefore(_latestEndTime)){
+      response = {
+        code: 200,
+        message: 'OK'
       };
     } else {
       response = {};
@@ -45,7 +53,20 @@ export default () => {
     return response;
   }
   return {
-    validateBooking(startTime = _earliestStartTime, endTime = _latestEndTime) {
+    validateBooking(startTime, endTime = _latestEndTime) {
+      //since javascript doesn't handle first parameters with default values well
+      if (startTime == null) {
+        startTime = _earliestStartTime;
+      }
+
+      if (typeof startTime == 'string') {
+          startTime = unixToMoment(startTime);
+      }
+
+      if (typeof endTime == 'string') {
+          endTime = unixToMoment(endTime);
+      }
+
       let startTimeResponse = validateStartTime(startTime, endTime);
       let endTimeResponse = validateEndTime(endTime, startTime);
       return {
