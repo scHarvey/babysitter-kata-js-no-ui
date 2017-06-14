@@ -61,4 +61,13 @@ describe('RateCalculator Calculations whole hours', () => {
     expect(calcReturn.totalCost).toEqual(24);
   });
 
+  it('returns 48 for a 3 hour booking all after midnight and after bedTime.', () => {
+    startTime = new Moment().startOf('day').hour(24).minute(0).format('X');
+    endTime = new Moment().startOf('day').hour(27).minute(0).format('X');
+    bedTime = new Moment().startOf('day').hour(22).minute(0).format('X');
+    calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
+    
+    expect(calcReturn.totalCost).toEqual(48);
+  });
+
 });

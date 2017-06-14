@@ -31,17 +31,22 @@ export default () => {
           bedTime = unixToMoment(bedTime);
       }
 
+      let totalDuration = new Moment.duration(endTime.diff(startTime));
+      const totalHours = totalDuration.asHours();
+
       let beforeBedDuration = new Moment.duration(bedTime.diff(startTime));
       let beforeBedHours = Math.round(beforeBedDuration.asHours());
-      if (beforeBedHours < 0) {
-        beforeBedHours = 0;
-      }
+      if (beforeBedHours > totalHours) {
+          beforeBedHours = totalHours;
+        } else if (beforeBedHours < 0) {
+          beforeBedHours = 0;
+        }
 
       let afterBedDuration = new Moment.duration(endTime.diff(bedTime));
       let afterBedHours = Math.round(afterBedDuration.asHours());
-      if (afterBedHours < 0) {
-        afterBedHours = 0;
-      }
+      if (afterBedHours > totalHours) {
+          afterBedHours = totalHours;
+        }
 
       let afterMidnightDuration = new Moment.duration(endTime.diff(Moment().startOf('day').hours(24)));
       let afterMidnightHours = Math.round(afterMidnightDuration.asHours());
