@@ -23,4 +23,11 @@ describe('BabysitterBooking startTime ', () => {
     expect(bookingReturn.message).toEqual('OK');
   });
 
+  it('returns a 200 OK if startTime is exactly 5:00PM', () => {
+      const startTime = new Moment().startOf('day').hour(17).minute(0).format('X');
+      let bookingReturn = babySitterBooking.validateBooking(startTime);
+
+      expect(bookingReturn.code).toEqual(200);
+      expect(bookingReturn.message).toEqual('OK');
+    });
 });
