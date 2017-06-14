@@ -6,7 +6,8 @@ import Moment from 'moment';
 */
 export default () => {
   const _hourlyRates = {
-    beforeBedTime: 12
+    beforeBedTime: 12,
+    afterBedTime: 8
   };
 
   function unixToMoment(time) {
@@ -27,10 +28,23 @@ export default () => {
           bedTime = unixToMoment(bedTime);
       }
 
-      let totalDuration = new Moment.duration(endTime.diff(startTime));
-      let rate = totalDuration.asHours() * _hourlyRates.beforeBedTime;
+      let beforeBedDuration = new Moment.duration(bedTime.diff(startTime));
+      let beforeBedHours = Math.round(beforeBedDuration.asHours());
+      if (beforeBedHours < 0) {
+        beforeBedHours = 0;
+      }
 
-      return {rate: rate};
+      let afterBedDuration = new Moment.duration(endTime.diff(bedTime));
+      let afterBedHours = Math.round(afterBedDuration.asHours());
+      if (afterBedHours < 0) {
+        afterBedHours = 0;
+      }
+
+      return {
+        totalCost: beforeBedHours * _hourlyRates.beforeBedTime + afterBedHours *  _hourlyRates.afterBedTime,
+        beforeBedCost: beforeBedHours * _hourlyRates.beforeBedTime
+
+        };
     }
   };
 }

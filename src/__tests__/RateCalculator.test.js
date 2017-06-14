@@ -31,7 +31,16 @@ describe('RateCalculator Calculations', () => {
     bedTime = new Moment().startOf('day').hour(19).minute(0).format('X');
     calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
 
-    expect(calcReturn.rate).toEqual(24);
+    expect(calcReturn.totalCost).toEqual(24);
+  });
+
+  it('returns 32 for a 3 hour booking with 1 hour after bedtime but before midnight', () => {
+    startTime = new Moment().startOf('day').hour(17).minute(0).format('X');
+    endTime = new Moment().startOf('day').hour(20).minute(0).format('X');
+    bedTime = new Moment().startOf('day').hour(19).minute(0).format('X');
+    calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
+
+    expect(calcReturn.totalCost).toEqual(32);
   });
 
 });
