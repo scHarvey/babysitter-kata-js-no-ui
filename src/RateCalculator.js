@@ -7,12 +7,15 @@ import Moment from 'moment';
 export default () => {
   const _hourlyRates = {
     beforeBedTime: 12,
-    afterBedTime: 8
+    afterBedTime: 8,
+    afterMidnight: 16
   };
 
   function unixToMoment(time) {
     return Moment.unix(time);
   }
+
+
 
   return {
     caclulateRate(startTime, endTime, bedTime) {
@@ -40,10 +43,17 @@ export default () => {
         afterBedHours = 0;
       }
 
-      return {
-        totalCost: beforeBedHours * _hourlyRates.beforeBedTime + afterBedHours *  _hourlyRates.afterBedTime,
-        beforeBedCost: beforeBedHours * _hourlyRates.beforeBedTime
+      let afterMidnightDuration = new Moment.duration(endTime.diff(Moment().startOf('day').hours(24)));
+      let afterMidnightHours = Math.round(afterMidnightDuration.asHours());
+      if (afterMidnightHours < 0) {
+        afterMidnightHours = 0;
+      }
 
+      return {
+        totalCost: beforeBedHours * _hourlyRates.beforeBedTime + (afterBedHours-afterMidnightHours) *  _hourlyRates.afterBedTime + afterMidnightHours * _hourlyRates.afterMidnight,
+        beforeBedCost: beforeBedHours * _hourlyRates.beforeBedTime,
+        afterBedCost: (afterBedHours-afterMidnightHours) *  _hourlyRates.afterBedTime,
+        afterMidnightCost: afterMidnightHours * _hourlyRates.afterMidnight
         };
     }
   };

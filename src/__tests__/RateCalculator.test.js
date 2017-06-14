@@ -24,7 +24,7 @@ beforeEach(() => {
   bedTime = null;
 });
 
-describe('RateCalculator Calculations', () => {
+describe('RateCalculator Calculations whole hours', () => {
   it('returns 24 for a 2 hour booking before bedtime', () => {
     startTime = new Moment().startOf('day').hour(17).minute(0).format('X');
     endTime = new Moment().startOf('day').hour(19).minute(0).format('X');
@@ -41,6 +41,15 @@ describe('RateCalculator Calculations', () => {
     calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
 
     expect(calcReturn.totalCost).toEqual(32);
+  });
+
+  it('returns 48 for a 4 hour booking with 1 hour after bedtime and 1 hour after midnight', () => {
+    startTime = new Moment().startOf('day').hour(21).minute(0).format('X');
+    endTime = new Moment().startOf('day').hour(25).minute(0).format('X');
+    bedTime = new Moment().startOf('day').hour(23).minute(0).format('X');
+    calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
+
+    expect(calcReturn.totalCost).toEqual(48);
   });
 
 });
