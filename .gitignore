@@ -5,8 +5,8 @@
 /coverage
 
 # build files
-/tmp
-/build
+/tmp/*
+/build/*
 
 # misc
 .DS_Store
