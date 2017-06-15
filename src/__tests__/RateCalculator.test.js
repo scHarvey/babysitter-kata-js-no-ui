@@ -89,4 +89,13 @@ describe('RateCalculator Calculations partial hours', () => {
 
     expect(calcReturn.totalCost).toEqual(44);
   });
+
+  it('returns 40 for a 3.5 hour booking with 1.5 of those after bedtime but before midnight.', () =>{
+    startTime = new Moment().startOf('day').hour(17).minute(0).format('X');
+    endTime = new Moment().startOf('day').hour(20).minute(30).format('X');
+    bedTime = new Moment().startOf('day').hour(19).minute(0).format('X');
+    calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime, '*');
+
+    expect(calcReturn.totalCost).toEqual(40);
+  });
 });
