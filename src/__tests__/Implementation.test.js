@@ -28,4 +28,12 @@ describe('BabysitterBooking Calculations ', () => {
     expect(bookingReturn.costs.totalCost).toEqual(24);
   });
 
+  it('it returns empty costs when given an invalid booking', () => {
+    startTime = new Moment().startOf('day').hour(14).minute(30).format('X');
+    endTime = new Moment().startOf('day').hour(19).minute(0).format('X');
+    bedTime = new Moment().startOf('day').hour(19).minute(0).format('X');
+    bookingReturn = babySitterBooking.validateBooking(startTime, endTime, bedTime);
+
+    expect(bookingReturn.costs).toEqual({});
+  });
 });

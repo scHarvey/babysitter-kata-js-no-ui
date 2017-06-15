@@ -8,59 +8,59 @@ import RateCalculator from './RateCalculator';
 export default () => {
   const _earliestStartTime = new Moment().startOf('day').hour(17).minute(0);
   const _latestEndTime = new Moment().startOf('day').hour(28).minute(0);
-  const rateCalculator = RateCalculator();
-  let calcReturn = {};
-  let response = {};
+  const _rateCalculator = RateCalculator();
+  let _calcReturn = {};
+  let _response = {};
 
   function unixToMoment(time) {
     return Moment.unix(time);
   }
   function validateStartTime(startTime, endTime) {
     if (startTime.isAfter(endTime)) {
-      response = {
+      _response = {
         code: 400,
         message: 'Start Time can not be later than End Time.'
       };
     } else if (startTime.isBefore(_earliestStartTime)) {
-      response = {
+      _response = {
         code: 400,
         message: 'Start time is earlier than the allowed time.'
       };
     } else if (startTime.isSameOrBefore(_latestEndTime)){
-      response = {
+      _response = {
         code: 200,
         message: 'OK'
       };
     } else {
-      response = {};
+      _response = {};
     }
 
-    if (response.code == 200) {
+    if (_response.code == 200) {
 
     }
-    return response;
+    return _response;
   }
 
   function validateEndTime(endTime, startTime) {
     if (endTime.isBefore(startTime)){
-      response = {
+      _response = {
         code: 400,
         message: 'End Time can not be earlier than Start Time.'
       };
     } else if (endTime.isAfter(_latestEndTime)) {
-      response = {
+      _response = {
         code: 400,
         message: 'End time is later than the allowed time.'
       };
     } else if (endTime.isSameOrBefore(_latestEndTime)){
-      response = {
+      _response = {
         code: 200,
         message: 'OK'
       };
     } else {
-      response = {};
+      _response = {};
     }
-    return response;
+    return _response;
   }
   return {
     validateBooking(startTime, endTime = _latestEndTime, bedTime = _latestEndTime) {
@@ -85,13 +85,15 @@ export default () => {
       let endTimeResponse = validateEndTime(endTime, startTime);
 
       if (startTimeResponse.code == 200 && endTimeResponse.code == 200) {
-        calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime)
+        _calcReturn = _rateCalculator.caclulateRate(startTime, endTime, bedTime)
+      } else {
+        _calcReturn = {};
       }
 
       return {
         'startTimeResponse': startTimeResponse,
         'endTimeResponse': endTimeResponse,
-        'costs': calcReturn
+        'costs': _calcReturn
       };
     }
   };
