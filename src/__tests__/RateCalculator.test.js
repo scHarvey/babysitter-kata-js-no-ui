@@ -81,13 +81,13 @@ describe('RateCalculator Calculations partial hours', () => {
     expect(calcReturn.totalCost).toEqual(36);
   });
 
-  it('returns 44 for a 3.5 hour booking with 1 of those after bedtime but before midnight.', () =>{
+  it('returns 42 for a 3.5 hour booking with 1 of those after bedtime but before midnight.', () =>{
     startTime = new Moment().startOf('day').hour(17).minute(0).format('X');
     endTime = new Moment().startOf('day').hour(20).minute(30).format('X');
     bedTime = new Moment().startOf('day').hour(19).minute(30).format('X');
     calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
 
-    expect(calcReturn.totalCost).toEqual(44);
+    expect(calcReturn.totalCost).toEqual(42);
   });
 
   it('returns 40 for a 3.5 hour booking with 1.5 of those after bedtime but before midnight.', () =>{
@@ -119,12 +119,12 @@ describe('RateCalculator Calculations partial hours', () => {
 });
 
 describe('RateCalculator Calculations weird cases', () => {
-  it('returns 72 for a 6 hour booking with 1.5 hours after bedtime and 1.5 after midnight', () => {
+  it('returns 80 for a 6 hour booking with 1.5 hours after bedtime and 1.5 after midnight', () => {
     startTime = new Moment().startOf('day').hour(19).minute(30).format('X');
     endTime = new Moment().startOf('day').hour(25).minute(30).format('X');
     bedTime = new Moment().startOf('day').hour(22).minute(30).format('X');
     calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
 
-    expect(calcReturn.totalCost).toEqual(72);
+    expect(calcReturn.totalCost).toEqual(80);
   });
 });
