@@ -15,14 +15,10 @@ export default () => {
     return Moment.unix(time);
   }
 
-  function calcBeforeBedHours(startTime, bedTime, totalHours, requiresRounding) {
+  function calcBeforeBedHours(startTime, bedTime, totalHours) {
     let beforeBedDuration = new Moment.duration(bedTime.diff(startTime));
-    let beforeBedHours = 0
-    if (requiresRounding) {
-      beforeBedHours = Math.ceil(beforeBedDuration.asHours());
-    } else {
-      beforeBedHours = beforeBedDuration.asHours();
-    }
+    let beforeBedHours = beforeBedDuration.asHours();
+
     if (beforeBedHours > totalHours) {
         beforeBedHours = totalHours;
     } else if (beforeBedHours < 0) {
@@ -31,29 +27,20 @@ export default () => {
     return beforeBedHours;
   }
 
-  function calcAfterBedHours(bedTime, endTime, totalHours, requiresRounding) {
+  function calcAfterBedHours(bedTime, endTime, totalHours) {
     let afterBedDuration = new Moment.duration(endTime.diff(bedTime));
-    let afterBedHours = 0
+    let afterBedHours = afterBedDuration.asHours();
 
-    if (requiresRounding) {
-      afterBedHours = Math.ceil(afterBedDuration.asHours());
-    } else {
-      afterBedHours = afterBedDuration.asHours();
-    }
     if (afterBedHours > totalHours) {
         afterBedHours = totalHours;
     }
     return afterBedHours;
   }
 
-  function calcAfterMidnightHours(endTime, requiresRounding) {
+  function calcAfterMidnightHours(endTime) {
     let afterMidnightDuration = new Moment.duration(endTime.diff(Moment().startOf('day').hours(24)));
-    let afterMidnightHours = 0;
-    if (requiresRounding) {
-      afterMidnightHours = Math.ceil(afterMidnightDuration.asHours());
-    } else {
-      afterMidnightHours = afterMidnightDuration.asHours();
-    }
+    let afterMidnightHours = afterMidnightDuration.asHours();
+
     if (afterMidnightHours < 0) {
       afterMidnightHours = 0;
     }
@@ -61,9 +48,9 @@ export default () => {
   }
 
   return {
-    caclulateRate(startTime, endTime, bedTime) {
+    caclulateRate(startTime, endTime, bedTime, testID = null) {
       let requiresRounding = false;
-
+      let leftOverTime = 0
       if (typeof startTime == 'string') {
           startTime = unixToMoment(startTime);
       }
@@ -83,14 +70,28 @@ export default () => {
         requiresRounding = true;
       }
 
-      let beforeBedHours = calcBeforeBedHours(startTime, bedTime, totalHours, requiresRounding);
-      let afterBedHours = calcAfterBedHours(bedTime, endTime, totalHours, requiresRounding);
-      let afterMidnightHours = calcAfterMidnightHours(endTime, requiresRounding);
+      let beforeBedHours = calcBeforeBedHours(startTime, bedTime, totalHours);
+      let afterBedHours = calcAfterBedHours(bedTime, endTime, totalHours);
+      let afterMidnightHours = calcAfterMidnightHours(endTime);
+
+      //compensate for bedTimeHours afterMidnightHours
+      afterBedHours = afterBedHours - afterMidnightHours;
+
+      if (requiresRounding) {
+        leftOverTime = totalHours - (beforeBedHours + afterBedHours + afterMidnightHours);
+        if (afterMidnightHours > 0) {
+          afterMidnightHours += leftOverTime;
+        } else if (afterBedHours > 0) {
+          afterBedHours += leftOverTime;
+        } else {
+          beforeBedHours += leftOverTime;
+        }
+      }
 
       return {
-        totalCost: beforeBedHours * _hourlyRates.beforeBedTime + (afterBedHours-afterMidnightHours) *  _hourlyRates.afterBedTime + afterMidnightHours * _hourlyRates.afterMidnight,
+        totalCost: beforeBedHours * _hourlyRates.beforeBedTime + afterBedHours *  _hourlyRates.afterBedTime + afterMidnightHours * _hourlyRates.afterMidnight,
         beforeBedCost: beforeBedHours * _hourlyRates.beforeBedTime,
-        afterBedCost: (afterBedHours-afterMidnightHours) *  _hourlyRates.afterBedTime,
+        afterBedCost:  afterBedHours*  _hourlyRates.afterBedTime,
         afterMidnightCost: afterMidnightHours * _hourlyRates.afterMidnight
         };
     }
