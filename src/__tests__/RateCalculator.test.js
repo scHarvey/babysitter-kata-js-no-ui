@@ -104,7 +104,7 @@ describe('RateCalculator Calculations partial hours', () => {
     endTime = new Moment().startOf('day').hour(25).minute(30).format('X');
     bedTime = new Moment().startOf('day').hour(23).minute(0).format('X');
     calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
-    console.log(calcReturn);
+
     expect(calcReturn.totalCost).toEqual(52);
   });
 
