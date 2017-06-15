@@ -66,8 +66,18 @@ describe('RateCalculator Calculations whole hours', () => {
     endTime = new Moment().startOf('day').hour(27).minute(0).format('X');
     bedTime = new Moment().startOf('day').hour(22).minute(0).format('X');
     calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
-    
+
     expect(calcReturn.totalCost).toEqual(48);
   });
+});
 
+describe('RateCalculator Calculations partial hours', () => {
+  it('returns 36 for a 2.5 hour booking before bedtime', () => {
+    startTime = new Moment().startOf('day').hour(17).minute(0).format('X');
+    endTime = new Moment().startOf('day').hour(19).minute(30).format('X');
+    bedTime = new Moment().startOf('day').hour(19).minute(30).format('X');
+    calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
+
+    expect(calcReturn.totalCost).toEqual(36);
+  });
 });

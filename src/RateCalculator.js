@@ -18,7 +18,7 @@ export default () => {
 
 
   return {
-    caclulateRate(startTime, endTime, bedTime) {
+    caclulateRate(startTime, endTime, bedTime, testID = null) {
       if (typeof startTime == 'string') {
           startTime = unixToMoment(startTime);
       }
@@ -32,7 +32,7 @@ export default () => {
       }
 
       let totalDuration = new Moment.duration(endTime.diff(startTime));
-      const totalHours = totalDuration.asHours();
+      const totalHours = Math.round(totalDuration.asHours());
 
       let beforeBedDuration = new Moment.duration(bedTime.diff(startTime));
       let beforeBedHours = Math.round(beforeBedDuration.asHours());
