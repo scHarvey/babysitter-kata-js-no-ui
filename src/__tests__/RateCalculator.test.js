@@ -136,4 +136,13 @@ describe('RateCalculator Calculations weird cases', () => {
 
     expect(calcReturn.totalCost).toEqual(111);
   });
+
+  it('returns 53 for a 4.75 hour booking with 1.5 hours after bedtime but before midnight', () => {
+    startTime = new Moment().startOf('day').hour(19).minute(15).format('X');
+    endTime = new Moment().startOf('day').hour(24).minute(0).format('X');
+    bedTime = new Moment().startOf('day').hour(22).minute(30).format('X');
+    calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
+
+    expect(calcReturn.totalCost).toEqual(53);
+  });
 });
