@@ -107,4 +107,13 @@ describe('RateCalculator Calculations partial hours', () => {
     console.log(calcReturn);
     expect(calcReturn.totalCost).toEqual(52);
   });
+
+  it('returns 36 for a 2.2 hour booking before bedtime', () => {
+    startTime = new Moment().startOf('day').hour(17).minute(0).format('X');
+    endTime = new Moment().startOf('day').hour(19).minute(12).format('X');
+    bedTime = new Moment().startOf('day').hour(19).minute(12).format('X');
+    calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
+
+    expect(calcReturn.totalCost).toEqual(36);
+  });
 });

@@ -32,10 +32,10 @@ export default () => {
       }
 
       let totalDuration = new Moment.duration(endTime.diff(startTime));
-      const totalHours = Math.round(totalDuration.asHours());
+      const totalHours = Math.ceil(totalDuration.asHours());
 
       let beforeBedDuration = new Moment.duration(bedTime.diff(startTime));
-      let beforeBedHours = Math.round(beforeBedDuration.asHours());
+      let beforeBedHours = Math.ceil(beforeBedDuration.asHours());
       if (beforeBedHours > totalHours) {
           beforeBedHours = totalHours;
         } else if (beforeBedHours < 0) {
@@ -43,13 +43,13 @@ export default () => {
         }
 
       let afterBedDuration = new Moment.duration(endTime.diff(bedTime));
-      let afterBedHours = Math.round(afterBedDuration.asHours());
+      let afterBedHours = Math.ceil(afterBedDuration.asHours());
       if (afterBedHours > totalHours) {
           afterBedHours = totalHours;
         }
 
       let afterMidnightDuration = new Moment.duration(endTime.diff(Moment().startOf('day').hours(24)));
-      let afterMidnightHours = Math.round(afterMidnightDuration.asHours());
+      let afterMidnightHours = Math.ceil(afterMidnightDuration.asHours());
       if (afterMidnightHours < 0) {
         afterMidnightHours = 0;
       }
