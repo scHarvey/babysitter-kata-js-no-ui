@@ -119,12 +119,12 @@ describe('RateCalculator Calculations partial hours', () => {
 });
 
 describe('RateCalculator Calculations weird cases', () => {
-  it('returns 80 for a 6 hour booking with 1.5 hours after bedtime and 1.5 after midnight', () => {
+  it('returns 72 for a 6 hour booking with 1.5 hours after bedtime and 1.5 after midnight', () => {
     startTime = new Moment().startOf('day').hour(19).minute(30).format('X');
     endTime = new Moment().startOf('day').hour(25).minute(30).format('X');
     bedTime = new Moment().startOf('day').hour(22).minute(30).format('X');
     calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime);
 
-    expect(calcReturn.totalCost).toEqual(80);
+    expect(calcReturn.totalCost).toEqual(72);
   });
 });
