@@ -1,6 +1,6 @@
 'use strict';
 import Moment from 'moment';
-
+import RateCalculator from './RateCalculator';
 
 /*
 * BabySitterBooking factory
@@ -8,7 +8,8 @@ import Moment from 'moment';
 export default () => {
   const _earliestStartTime = new Moment().startOf('day').hour(17).minute(0);
   const _latestEndTime = new Moment().startOf('day').hour(28).minute(0);
-
+  const rateCalculator = RateCalculator();
+  let calcReturn = {};
   let response = {};
 
   function unixToMoment(time) {
@@ -33,6 +34,10 @@ export default () => {
     } else {
       response = {};
     }
+
+    if (response.code == 200) {
+
+    }
     return response;
   }
 
@@ -41,7 +46,7 @@ export default () => {
       response = {
         code: 400,
         message: 'End Time can not be earlier than Start Time.'
-      };  
+      };
     } else if (endTime.isAfter(_latestEndTime)) {
       response = {
         code: 400,
@@ -58,7 +63,7 @@ export default () => {
     return response;
   }
   return {
-    validateBooking(startTime, endTime = _latestEndTime) {
+    validateBooking(startTime, endTime = _latestEndTime, bedTime = _latestEndTime) {
       //since javascript doesn't handle first parameters with default values well
       if (startTime == null) {
         startTime = _earliestStartTime;
@@ -72,11 +77,21 @@ export default () => {
           endTime = unixToMoment(endTime);
       }
 
+      if (typeof bedTime == 'string') {
+          bedTime = unixToMoment(bedTime);
+      }
+
       let startTimeResponse = validateStartTime(startTime, endTime);
       let endTimeResponse = validateEndTime(endTime, startTime);
+
+      if (startTimeResponse.code == 200 && endTimeResponse.code == 200) {
+        calcReturn = rateCalculator.caclulateRate(startTime, endTime, bedTime)
+      }
+
       return {
         'startTimeResponse': startTimeResponse,
-        'endTimeResponse': endTimeResponse
+        'endTimeResponse': endTimeResponse,
+        'costs': calcReturn
       };
     }
   };

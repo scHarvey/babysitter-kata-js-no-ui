@@ -48,7 +48,7 @@ export default () => {
   }
 
   return {
-    caclulateRate(startTime, endTime, bedTime, testID = null) {
+    caclulateRate(startTime, endTime, bedTime) {
       let requiresRounding = false;
       let leftOverTime = 0
       if (typeof startTime == 'string') {
