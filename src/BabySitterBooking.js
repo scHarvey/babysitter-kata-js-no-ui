@@ -12,9 +12,23 @@ export default () => {
   let _calcReturn = {};
   let _response = {};
 
+  /**
+   * Turns a unix date string into a moment date object.
+   * @method
+   * @param {string} time - A a unix time string
+   * @returns a moment time object
+  */
   function unixToMoment(time) {
     return Moment.unix(time);
   }
+
+  /**
+   * validates our booking start time based on start and end time, comparing it to global earliest start and latest end times.
+   * @method
+   * @param {Moment} startTime - a moment object representing the booking start time
+   * @param {Moment} endTime - a moment object representing the booking end time
+   * @returns a response object with code and message
+  */
   function validateStartTime(startTime, endTime) {
     if (startTime.isAfter(endTime)) {
       _response = {
@@ -41,6 +55,13 @@ export default () => {
     return _response;
   }
 
+  /**
+   * validates our booking end time based on end and start time, comparing it to global earliest start and latest end times.
+   * @method
+   * @param {Moment} endTime - a moment object representing the booking end time
+   * @param {Moment} startTime - a moment object representing the booking start time
+   * @returns a response object with code and message
+  */
   function validateEndTime(endTime, startTime) {
     if (endTime.isBefore(startTime)){
       _response = {
@@ -63,6 +84,14 @@ export default () => {
     return _response;
   }
   return {
+    /**
+     * validates our booking using private methods to validate start and end times, if valid calculates our price.
+     * @method
+     * @param {Moment|string} startTime - a moment object or string representing the booking start time
+     * @param {Moment|string} endTime - a moment object or string representing the booking end time
+     * @param {Moment|string} bedTime - a moment object or string representing the booking bed time
+     * @returns a response object with code and message and a cost breakdown
+    */
     validateBooking(startTime, endTime = _latestEndTime, bedTime = _latestEndTime) {
       //since javascript doesn't handle first parameters with default values well
       if (startTime == null) {

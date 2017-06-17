@@ -1,4 +1,4 @@
-# Kata project to demonstrate proficiency in TDD and OOP
+# Kata project to demonstrate proficiency in TDD and OOP using Jest and Javascript (ES6)
 
 ## Background
 This kata simulates a babysitter working and getting paid for one night. The rules are pretty straight forward.
