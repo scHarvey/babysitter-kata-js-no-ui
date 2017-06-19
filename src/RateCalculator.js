@@ -75,6 +75,15 @@ export default () => {
     return afterMidnightHours;
   }
 
+  /**
+   * Calculates cost breakdown for each category and a total cost
+   * @method
+   * @param {number} beforeBedHours - hours that fit in the before bed category
+   * @param {number} afterBedHours - hours that fit in the after bed category
+   * @param {number} afterMidnightHours - hours that fit in the after midnight category
+   * @param {number} totalHours - total hours for the booking, rounded up to a whole hour
+   * @returns cost breakdown object
+  */
   function calcCostBreakDown(beforeBedHours, afterBedHours, afterMidnightHours, totalHours) {
     let leftOverTime = 0;
     //compensate for bedTimeHours after midnight
