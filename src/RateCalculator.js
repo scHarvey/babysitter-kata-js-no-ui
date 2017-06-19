@@ -75,6 +75,30 @@ export default () => {
     return afterMidnightHours;
   }
 
+  function calcCostBreakDown(beforeBedHours, afterBedHours, afterMidnightHours, totalHours) {
+    let leftOverTime = 0;
+    //compensate for bedTimeHours after midnight
+    afterBedHours = afterBedHours - afterMidnightHours;
+
+    if (totalHours > beforeBedHours + afterBedHours + afterMidnightHours) {
+      leftOverTime = totalHours - (beforeBedHours + afterBedHours + afterMidnightHours);
+      if (afterMidnightHours > 0) {
+        afterMidnightHours += leftOverTime;
+      } else if (afterBedHours > 0) {
+        afterBedHours += leftOverTime;
+      } else {
+        beforeBedHours += leftOverTime;
+      }
+    }
+
+    return {
+      totalCost: beforeBedHours * _hourlyRates.beforeBedTime + afterBedHours *  _hourlyRates.afterBedTime + afterMidnightHours * _hourlyRates.afterMidnight,
+      beforeBedCost: beforeBedHours * _hourlyRates.beforeBedTime,
+      afterBedCost:  afterBedHours*  _hourlyRates.afterBedTime,
+      afterMidnightCost: afterMidnightHours * _hourlyRates.afterMidnight
+    };
+  }
+
   return {
     /**
      * Caculates the cost for a booking given start, end and bed times, using private methods to calculate hours within each cost category.
@@ -85,8 +109,6 @@ export default () => {
      * @returns an object containing total cost and the cost for each individual category
     */
     caclulateRate(startTime, endTime, bedTime) {
-      let requiresRounding = false;
-      let leftOverTime = 0
       if (typeof startTime == 'string') {
           startTime = unixToMoment(startTime);
       }
@@ -103,33 +125,13 @@ export default () => {
       let totalHours = totalDuration.asHours();
       if (totalHours < Math.ceil(totalHours)) {
         totalHours = Math.ceil(totalHours);
-        requiresRounding = true;
       }
 
       let beforeBedHours = calcBeforeBedHours(startTime, bedTime, totalHours);
       let afterBedHours = calcAfterBedHours(bedTime, endTime, totalHours);
       let afterMidnightHours = calcAfterMidnightHours(endTime);
 
-      //compensate for bedTimeHours after midnight
-      afterBedHours = afterBedHours - afterMidnightHours;
-
-      if (requiresRounding) {
-        leftOverTime = totalHours - (beforeBedHours + afterBedHours + afterMidnightHours);
-        if (afterMidnightHours > 0) {
-          afterMidnightHours += leftOverTime;
-        } else if (afterBedHours > 0) {
-          afterBedHours += leftOverTime;
-        } else {
-          beforeBedHours += leftOverTime;
-        }
-      }
-
-      return {
-        totalCost: beforeBedHours * _hourlyRates.beforeBedTime + afterBedHours *  _hourlyRates.afterBedTime + afterMidnightHours * _hourlyRates.afterMidnight,
-        beforeBedCost: beforeBedHours * _hourlyRates.beforeBedTime,
-        afterBedCost:  afterBedHours*  _hourlyRates.afterBedTime,
-        afterMidnightCost: afterMidnightHours * _hourlyRates.afterMidnight
-        };
+      return calcCostBreakDown(beforeBedHours, afterBedHours, afterMidnightHours, totalHours);
     }
   };
 }
