@@ -9,8 +9,6 @@ export default () => {
   const _earliestStartTime = new Moment().startOf('day').hour(17).minute(0);
   const _latestEndTime = new Moment().startOf('day').hour(28).minute(0);
   const _rateCalculator = RateCalculator();
-  let _calcReturn = {};
-  let _response = {};
 
   /**
    * Turns a unix date string into a moment date object.
@@ -30,29 +28,30 @@ export default () => {
    * @returns a response object with code and message
   */
   function validateStartTime(startTime, endTime) {
+    let response = {};
     if (startTime.isAfter(endTime)) {
-      _response = {
+      response = {
         code: 400,
         message: 'Start Time can not be later than End Time.'
       };
     } else if (startTime.isBefore(_earliestStartTime)) {
-      _response = {
+      response = {
         code: 400,
         message: 'Start time is earlier than the allowed time.'
       };
     } else if (startTime.isSameOrBefore(_latestEndTime)){
-      _response = {
+      response = {
         code: 200,
         message: 'OK'
       };
     } else {
-      _response = {};
+      response = {};
     }
 
-    if (_response.code == 200) {
+    if (response.code == 200) {
 
     }
-    return _response;
+    return response;
   }
 
   /**
@@ -63,26 +62,28 @@ export default () => {
    * @returns a response object with code and message
   */
   function validateEndTime(endTime, startTime) {
+    let response = {};
     if (endTime.isBefore(startTime)){
-      _response = {
+      response = {
         code: 400,
         message: 'End Time can not be earlier than Start Time.'
       };
     } else if (endTime.isAfter(_latestEndTime)) {
-      _response = {
+      response = {
         code: 400,
         message: 'End time is later than the allowed time.'
       };
     } else if (endTime.isSameOrBefore(_latestEndTime)){
-      _response = {
+      response = {
         code: 200,
         message: 'OK'
       };
     } else {
-      _response = {};
+      response = {};
     }
-    return _response;
+    return response;
   }
+  
   return {
     /**
      * validates our booking using private methods to validate start and end times, if valid calculates our price.
@@ -112,17 +113,14 @@ export default () => {
 
       let startTimeResponse = validateStartTime(startTime, endTime);
       let endTimeResponse = validateEndTime(endTime, startTime);
-
+      let calcReturn = {};
       if (startTimeResponse.code == 200 && endTimeResponse.code == 200) {
-        _calcReturn = _rateCalculator.caclulateRate(startTime, endTime, bedTime)
-      } else {
-        _calcReturn = {};
+        calcReturn = _rateCalculator.caclulateRate(startTime, endTime, bedTime)
       }
-
       return {
         'startTimeResponse': startTimeResponse,
         'endTimeResponse': endTimeResponse,
-        'costs': _calcReturn
+        'costs': calcReturn
       };
     }
   };
